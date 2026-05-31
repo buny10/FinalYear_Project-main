@@ -4,6 +4,8 @@ import { GlobalStyle } from '../../theme/globalStyles';
 import Icon from '../../components/ui/Icon';
 import Input from '../../components/ui/Input';
 
+
+
 export default function LoginPage({ onLogin, onNavigate }) {
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
@@ -25,7 +27,7 @@ export default function LoginPage({ onLogin, onNavigate }) {
     const data = await res.json();
     if (res.ok) {
       localStorage.setItem("token", data.token);
-       window.location.href = "/dashboard";
+      onLogin(data.user)
     } else {
       setError(data.message || "Login failed");
     }
