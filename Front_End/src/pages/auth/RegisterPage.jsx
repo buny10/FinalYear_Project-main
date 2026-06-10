@@ -5,7 +5,7 @@ import Icon from '../../components/ui/Icon';
 import Input from '../../components/ui/Input';
 import Select from '../../components/ui/Select';
 
-export default function RegisterPage({ onRegister, onNavigate }) {
+export default function RegisterPage({  onNavigate }) {
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({ 
     name: "", company: "", role: "", email: "", password: "", confirm: "", agree: false 

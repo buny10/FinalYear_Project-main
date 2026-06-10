@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { Activity, useState } from 'react';
 import { C } from '../../theme/colors';
 import { GlobalStyle } from '../../theme/globalStyles';
 import Icon from '../../components/ui/Icon';
 import Input from '../../components/ui/Input';
+
 
 export default function LoginPage({ onLogin, onNavigate }) {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -23,9 +24,10 @@ export default function LoginPage({ onLogin, onNavigate }) {
       body: JSON.stringify(form),
     });
     const data = await res.json();
-    if (res.ok) {
-      localStorage.setItem("token", data.token);
-       window.location.href = "/dashboard";
+   if (res.ok) {
+  localStorage.setItem("token", data.token);
+  onLogin(data.user);  // pass the user object, not "/dashboard"
+
     } else {
       setError(data.message || "Login failed");
     }

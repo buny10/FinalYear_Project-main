@@ -9,7 +9,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors({
-  origin: "http://localhost:5180",
+  origin: "http://localhost:5173",
   credentials: true
 }));
 app.use("/", authRoutes); // handles /login and /register

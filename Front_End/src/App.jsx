@@ -16,7 +16,7 @@ export default function App() {
   const { data, setData } = useAppData();
   const [activePage, setActivePage] = useState("dashboard");
 
-  if (page === "login") return <LoginPage onLogin={login} onNavigate={setPage} />;
+ if (page === "login") return <LoginPage onLogin={login} onNavigate={setPage} />;
   if (page === "register") return <RegisterPage onRegister={register} onNavigate={setPage} />;
 
   const pageProps = { data, setData, user, setUser };
