@@ -3,7 +3,7 @@ export const C = {
   sidebar: "#141414",
   card: "#1a1a1a",
   cardBorder: "#252525",
-  accent: "#C8F04A",
+  accent: "#1f5de3",
   accentDim: "rgba(200,240,74,0.12)",
   text: "#f0f0f0",
   textMuted: "#888",

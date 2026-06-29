@@ -2,6 +2,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const authRoutes = require("./routes/auth");
+const employeeRoutes = require("./routes/employees");
+const verifyToken = require("./middleware/auth");
+const productRoutes = require("./routes/products");
 
 require('dotenv').config();
 
@@ -12,7 +15,10 @@ app.use(cors({
   origin: "http://localhost:5173",
   credentials: true
 }));
-app.use("/", authRoutes); // handles /login and /register
+
+app.use("/", authRoutes);
+app.use("/api/employees", verifyToken, employeeRoutes);
+app.use("/api/products", verifyToken, productRoutes);
 
 mongoose.connect('mongodb://127.0.0.1:27017/businessDB')
   .then(() => console.log("MongoDB connected"))
