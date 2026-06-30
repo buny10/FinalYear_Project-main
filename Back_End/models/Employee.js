@@ -2,6 +2,11 @@ const mongoose = require('mongoose');
 
 const employeeSchema = new mongoose.Schema(
   {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
     name: {
       type: String,
       required: true,
@@ -19,7 +24,6 @@ const employeeSchema = new mongoose.Schema(
     email: {
       type: String,
       required: true,
-      unique: true,
       lowercase: true,
       trim: true,
     },
@@ -28,7 +32,7 @@ const employeeSchema = new mongoose.Schema(
       default: '',
     },
     salary: {
-      type: "Number",
+      type: Number,
       required: true,
       min: 0,
     },
@@ -51,7 +55,11 @@ const employeeSchema = new mongoose.Schema(
   }
 );
 
-// Automatically generate avatar initials
+// Email only needs to be unique PER USER, not globally —
+// otherwise two different companies couldn't both have an
+// employee named "john@company.com" even though they're unrelated.
+employeeSchema.index({ userId: 1, email: 1 }, { unique: true });
+
 employeeSchema.pre('save', function () {
   if (this.name && !this.avatar) {
     this.avatar = this.name

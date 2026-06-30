@@ -2,8 +2,8 @@ import { C } from "../theme/colors";
 
 export const fmt = (n) => 
   new Intl.NumberFormat("en-US", {
-    style: "currency", 
-    currency: "USD", 
+    style: "currency",
+    currency: "INR", 
     maximumFractionDigits: 0
   }).format(n);
 

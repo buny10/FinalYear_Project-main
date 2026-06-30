@@ -5,6 +5,8 @@ const authRoutes = require("./routes/auth");
 const employeeRoutes = require("./routes/employees");
 const verifyToken = require("./middleware/auth");
 const productRoutes = require("./routes/products");
+const customerRoutes = require("./routes/customers");
+const invoiceRoutes = require("./routes/invoices");
 
 require('dotenv').config();
 
@@ -19,6 +21,8 @@ app.use(cors({
 app.use("/", authRoutes);
 app.use("/api/employees", verifyToken, employeeRoutes);
 app.use("/api/products", verifyToken, productRoutes);
+app.use("/api/customers", verifyToken, customerRoutes);
+app.use("/api/invoices", verifyToken, invoiceRoutes);
 
 mongoose.connect('mongodb://127.0.0.1:27017/businessDB')
   .then(() => console.log("MongoDB connected"))

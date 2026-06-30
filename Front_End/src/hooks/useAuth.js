@@ -1,20 +1,35 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 export function useAuth() {
-  const [user, setUser] = useState(null);
-  const [page, setPage] = useState("login");
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem("user");
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
+
+  const [page, setPage] = useState(() => {
+    return localStorage.getItem("user") ? "app" : "login";
+  });
 
   const login = (userDataFromServer) => {
-  setUser(userDataFromServer);  // store the user
-  setPage("app");               // move away from login
-};
+    localStorage.setItem("user", JSON.stringify(userDataFromServer));
+
+    setUser(userDataFromServer);
+    setPage("app");
+  };
 
   const register = (u) => {
-    setUser({ ...u, role: "Admin" });
+    const newUser = { ...u, role: "Admin" };
+
+    localStorage.setItem("user", JSON.stringify(newUser));
+
+    setUser(newUser);
     setPage("app");
   };
 
   const logout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+
     setUser(null);
     setPage("login");
   };

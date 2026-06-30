@@ -1,56 +1,49 @@
-import React, { Activity, useState } from 'react';
+import React, { useState } from 'react';
 import { C } from '../../theme/colors';
 import { GlobalStyle } from '../../theme/globalStyles';
 import Icon from '../../components/ui/Icon';
 import Input from '../../components/ui/Input';
 
-
-export default function LoginPage({ onLogin, onNavigate }) {
+export default function LoginPage({ onLogin, onNavigate, isDark, toggleTheme }) {
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
- 
+  const [loading, setLoading] = useState(false);
 
-
-   // To this:
-     const [loading, setLoading] = useState(false);
-
-   const handleLogin = async () => {
-  setError("");
-  setLoading(true);
-  try {
-    const res = await fetch("http://localhost:5000/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-    const data = await res.json();
-   if (res.ok) {
-  localStorage.setItem("token", data.token);
-  onLogin(data.user);  // pass the user object, not "/dashboard"
-
-    } else {
-      setError(data.message || "Login failed");
+  const handleLogin = async () => {
+    setError("");
+    setLoading(true);
+    try {
+      const res = await fetch("http://localhost:5000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        localStorage.setItem("token", data.token);
+        onLogin(data.user);
+      } else {
+        setError(data.message || "Login failed");
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Cannot reach server");
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    console.error(err);
-    setError("Cannot reach server");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", background: C.bg, fontFamily: "'DM Sans', sans-serif" }}>
       <GlobalStyle />
 
-      {/* LEFT SIDE */}
-      <div 
+      <div
         style={{
-          width: "45%", 
-          background: "#111", 
-          display: "flex", 
-          flexDirection: "column", 
-          padding: "48px 44px", 
+          width: "45%",
+          background: "#111",
+          display: "flex",
+          flexDirection: "column",
+          padding: "48px 44px",
           borderRight: "1px solid #1e1e1e"
         }}
       >
@@ -62,7 +55,6 @@ export default function LoginPage({ onLogin, onNavigate }) {
             <rect x="10" y="24" width="10" height="10" rx="2" fill="#0a0a0a"/>
             <rect x="24" y="24" width="10" height="10" rx="2" fill="#0a0a0a" opacity="0.4"/>
           </svg>
-
           <span style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: "1.3rem", color: "#fff" }}>
             BizCore
           </span>
@@ -72,89 +64,85 @@ export default function LoginPage({ onLogin, onNavigate }) {
           <h2 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: "2.4rem", color: "#fff" }}>
             Experience the power of one dashboard to run the entire business.
           </h2>
-
-          <p style={{ color: "#666", fontSize: "0.95rem", marginTop: 18 }}>
+          <p style={{ color: "#999", fontSize: "0.95rem", marginTop: 18 }}>
             One platform for HR, Finance, Inventory, Projects, CRM, and more.
           </p>
         </div>
 
-        <p style={{ color: "#333", fontSize: "0.75rem" }}>
+        <p style={{ color: "#555", fontSize: "0.75rem" }}>
           © 2024 BizCore. All rights reserved.
         </p>
       </div>
 
-      {/* RIGHT SIDE */}
-      <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: 40 }}>
-        <div style={{ width: "100%", maxWidth: 400 }}>
+      <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: 40, position: "relative" }}>
 
+        <button
+          onClick={toggleTheme}
+          aria-label="Toggle theme"
+          style={{
+            position: "absolute", top: 28, right: 32,
+            background: "transparent", border: "none", cursor: "pointer",
+            padding: 8, borderRadius: "50%",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            transition: "transform 0.3s ease",
+            transform: isDark ? "rotate(0deg)" : "rotate(180deg)",
+          }}
+        >
+          <LampIcon isOn={!isDark} color={C.text} accent={C.accent} />
+        </button>
+
+        <div style={{ width: "100%", maxWidth: 400 }}>
           <h2 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: "2rem", color: C.text }}>
             Sign in
           </h2>
-
           <p style={{ color: C.textMuted, marginBottom: 32 }}>
             Access your BizCore dashboard
           </p>
 
-          {/* ERROR */}
           {error && (
             <div style={{ background: "#ef444418", padding: 10, borderRadius: 8, marginBottom: 16, color: "red" }}>
               <Icon name="warning" size={16} color="red" /> {error}
             </div>
           )}
 
-          {/* EMAIL */}
-          <Input
-            label="Email"
-            value={form.email}
-            onChange={v => setForm({ ...form, email: v })}
-            type="email"
-            placeholder="bizcore@gmail.com"
-          />
+          <Input label="Email" value={form.email} onChange={v => setForm({ ...form, email: v })} type="email" placeholder="bizcore@gmail.com" />
+          <Input label="Password" value={form.password} onChange={v => setForm({ ...form, password: v })} type="password" placeholder="••••••••" />
 
-          {/* PASSWORD */}
-          <Input
-            label="Password"
-            value={form.password}
-            onChange={v => setForm({ ...form, password: v })}
-            type="password"
-            placeholder="••••••••"
-          />
-
-          {/* LOGIN BUTTON */}
           <button
             onClick={handleLogin}
             style={{
-              width: "100%",
-              padding: "12px",
-              marginTop: 20,
-              background: C.accent,
-              border: "none",
-              borderRadius: 10,
-              fontWeight: 700,
-              cursor: "pointer"
+              width: "100%", padding: "12px", marginTop: 20,
+              background: C.accent, border: "none", borderRadius: 10,
+              fontWeight: 700, cursor: "pointer", color: "#fff",
             }}
           >
             {loading ? "Signing in..." : "Sign In"}
           </button>
 
-          {/* REGISTER */}
           <div style={{ textAlign: "center", marginTop: 20 }}>
             <span style={{ color: C.textMuted }}>No account? </span>
-            <button
-              onClick={() => onNavigate("register")}
-              style={{ background: "none", border: "none", color: C.accent, cursor: "pointer" }}
-            >
+            <button onClick={() => onNavigate("register")} style={{ background: "none", border: "none", color: C.accent, cursor: "pointer" }}>
               Create one
             </button>
           </div>
-
-          {/* DEMO */}
-          {/* <div style={{ marginTop: 20, fontSize: "0.8rem", color: C.textMuted }}>
-            Demo: admin@bizcore.com / admin123
-          </div> */}
-
         </div>
       </div>
     </div>
+  );
+}
+
+function LampIcon({ isOn, color, accent }) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M12 2a7 7 0 0 0-4 12.74V17a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-2.26A7 7 0 0 0 12 2Z"
+        stroke={isOn ? accent : color}
+        strokeWidth="1.6"
+        fill={isOn ? accent : "none"}
+        fillOpacity={isOn ? 0.18 : 0}
+      />
+      <line x1="9" y1="21" x2="15" y2="21" stroke={color} strokeWidth="1.6" strokeLinecap="round" />
+      <line x1="10" y1="19" x2="14" y2="19" stroke={color} strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
   );
 }

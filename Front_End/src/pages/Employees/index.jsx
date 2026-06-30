@@ -17,7 +17,7 @@ const EMPTY_FORM = {
   joined: new Date().toISOString().split('T')[0],
 };
 
-export default function EmployeesPage() {
+export default function EmployeesPage({  setData }) {
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading]     = useState(true);
   const [error, setError]         = useState('');
@@ -35,8 +35,8 @@ export default function EmployeesPage() {
       const params = {};
       if (search)           params.search = search;
       if (filter !== 'All') params.dept   = filter;
-      const data = await employeeAPI.getAll(params);
-      setEmployees(data);
+      const result = await employeeAPI.getAll(params);
+      setEmployees(result);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -48,6 +48,16 @@ export default function EmployeesPage() {
     const t = setTimeout(fetchEmployees, search ? 300 : 0);
     return () => clearTimeout(t);
   }, [fetchEmployees, search]);
+
+  // 🔄 Keep shared dashboard data in sync whenever the employee list changes.
+  // NOTE: this only mirrors the CURRENT filtered/searched view into shared
+  // state. If search/filter is active, dashboard counts would reflect the
+  // filtered subset, not all employees — see the note below this file.
+  useEffect(() => {
+    if (setData) {
+      setData(prev => ({ ...prev, employees }));
+    }
+  }, [employees, setData]);
 
   const stats = {
     total:     employees.length,
@@ -97,8 +107,11 @@ export default function EmployeesPage() {
 
   return (
     <div className="page-content" style={{ padding: '28px', overflowY: 'auto', flex: 1 }}>
+       <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: "2rem", color: C.text, margin: "0 0 8px 0" }}>Employees</h1>
+                  
+           
       <PageHeader
-        title="Employees"
+        
         subtitle={`${stats.total} total team members`}
         action={<Btn label="Add Employee" icon="plus" onClick={openAdd} />}
       />

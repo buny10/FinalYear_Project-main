@@ -9,7 +9,7 @@ import LowStockAlert from './LowStockAlert';
 import { C } from '../../theme/colors';
 import { fmt } from '../../utils/formatters';
 
-export default function DashboardPage({ data }) {
+export default function DashboardPage({ data, setActivePage }) {
   const totalRevenue = data.revenueData.reduce((a, b) => a + b.revenue, 0);
   const activeEmployees = data.employees.filter(e => e.status === "Active").length;
   const pendingInvoices = data.invoices.filter(i => i.status === "Pending" || i.status === "Overdue").length;
@@ -25,18 +25,43 @@ export default function DashboardPage({ data }) {
 
   return (
     <div className="page-content" style={{ padding: "28px 28px", overflowY: "auto", flex: 1 }}>
-      <PageHeader title="Dashboard" subtitle="Welcome back! Here's what's happening today."/>
-      
+       <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: "2rem", color: C.text, margin: "0 0 8px 0" }}>Dashboard</h1>
+                    <p style={{ color: C.textMuted, margin: "0 0 24px 1", fontSize: "1rem" }}>Welcome back! Here's what's happening today.</p>
+      {/* <PageHeader title="Dashboard" subtitle="Welcome back! Here's what's happening today."/> */}
+
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 24 }}>
-        <StatCard label="Total Revenue (YTD)" value={fmt(totalRevenue)} change="+12.4%" icon="finance" color={C.accent}/>
-        <StatCard label="Active Employees" value={activeEmployees} change="+2" icon="employees" color={C.info}/>
-        <StatCard label="Pending Invoices" value={pendingInvoices} change={pendingInvoices > 2 ? "+1" : "-1"} icon="dollar" color={C.warning}/>
-        <StatCard label="Open Projects" value={data.projects.filter(p => p.status === "In Progress").length} change="+1" icon="projects" color={C.success}/>
+        <StatCard
+          label="Total Revenue (YTD)"
+          value= {fmt(totalRevenue)}
+          change="+12.4%"
+          icon= "rupee"
+          color={C.accent}
+          onClick={() => setActivePage("finance")}
+        />
+        <StatCard
+          label="Active Employees"
+          value={activeEmployees}
+          change="+2"
+          icon="employees"
+          color={C.info}
+          onClick={() => setActivePage("employees")}
+        />
+        <StatCard
+          label="Pending Invoices"
+          value={pendingInvoices}
+          change={pendingInvoices > 2 ? "+1" : "-1"}
+          icon="rupee"
+          color={C.warning}
+          onClick={() => setActivePage("finance")}
+        />
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 20, marginBottom: 20 }}>
         <RevenueChart data={data.revenueData} />
-        <Card>
+        <Card
+          onClick={() => setActivePage("finance")}
+          style={{ cursor: "pointer" }}
+        >
           <h3 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: "0.95rem", marginBottom: 16 }}>Revenue by Service</h3>
           <ResponsiveContainer width="100%" height={160}>
             <PieChart>
@@ -45,9 +70,9 @@ export default function DashboardPage({ data }) {
                   <Cell key={i} fill={[C.accent, C.info, C.warning, C.success][i]}/>
                 ))}
               </Pie>
-              <Tooltip 
-                contentStyle={{ background: C.card, border: `1px solid ${C.cardBorder}`, borderRadius: 8, color: C.text, fontSize: 12 }} 
-                formatter={v => [`${v}%`]} 
+              <Tooltip
+                contentStyle={{ background: C.card, border: `1px solid ${C.cardBorder}`, borderRadius: 8, color: C.text, fontSize: 12 }}
+                formatter={v => [`${v}%`]}
               />
             </PieChart>
           </ResponsiveContainer>
@@ -64,8 +89,8 @@ export default function DashboardPage({ data }) {
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 20 }}>
         <ActivityFeed activities={recentActivity} />
-        
-        <Card>
+
+        {/* <Card style={{ cursor: "default" }}>
           <h3 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: "0.95rem", marginBottom: 14 }}>Project Progress</h3>
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {data.projects.filter(p => p.status !== "Completed").slice(0, 4).map(p => (
@@ -75,22 +100,22 @@ export default function DashboardPage({ data }) {
                   <span style={{ fontSize: "0.75rem", color: C.textMuted }}>{p.progress}%</span>
                 </div>
                 <div style={{ height: 5, borderRadius: 3, background: "#2a2a2a" }}>
-                  <div 
-                    style={{ 
-                      height: "100%", 
-                      borderRadius: 3, 
-                      width: `${p.progress}%`, 
-                      background: p.progress > 75 ? C.success : p.progress > 40 ? C.accent : C.warning, 
-                      transition: "width 0.3s" 
+                  <div
+                    style={{
+                      height: "100%",
+                      borderRadius: 3,
+                      width: `${p.progress}%`,
+                      background: p.progress > 75 ? C.success : p.progress > 40 ? C.accent : C.warning,
+                      transition: "width 0.3s"
                     }}
                   />
                 </div>
               </div>
             ))}
           </div>
-        </Card>
+        </Card> */}
 
-        <LowStockAlert items={lowStock} />
+        <LowStockAlert items={lowStock} onViewAll={() => setActivePage("store")} />
       </div>
     </div>
   );
