@@ -20,6 +20,7 @@ export default function LoginPage({ onLogin, onNavigate, isDark, toggleTheme }) 
       });
       const data = await res.json();
       if (res.ok) {
+        
         localStorage.setItem("token", data.token);
         onLogin(data.user);
       } else {
@@ -34,10 +35,30 @@ export default function LoginPage({ onLogin, onNavigate, isDark, toggleTheme }) 
   };
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", background: C.bg, fontFamily: "'DM Sans', sans-serif" }}>
-      <GlobalStyle />
+   <div
+  style={{
+    minHeight: "100vh",
+    display: "flex",
+    fontFamily: "'DM Sans', sans-serif",
 
-      <div
+    backgroundImage: `
+      linear-gradient(
+        rgba(8,12,20,0.75),
+        rgba(8,12,20,0.75)
+      ),
+      url("/images/signin.jpeg")
+    `,
+
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+    backgroundAttachment: "fixed",
+  }}
+>
+      <GlobalStyle />
+      
+
+      {/* <div
         style={{
           width: "45%",
           background: "#111",
@@ -72,7 +93,7 @@ export default function LoginPage({ onLogin, onNavigate, isDark, toggleTheme }) 
         <p style={{ color: "#555", fontSize: "0.75rem" }}>
           © 2024 BizCore. All rights reserved.
         </p>
-      </div>
+      </div> */}
 
       <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: 40, position: "relative" }}>
 
@@ -92,11 +113,11 @@ export default function LoginPage({ onLogin, onNavigate, isDark, toggleTheme }) 
         </button>
 
         <div style={{ width: "100%", maxWidth: 400 }}>
-          <h2 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: "2rem", color: C.text }}>
+          <h2 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: "2rem", color: "0f0f0f" }}>
             Sign in
           </h2>
-          <p style={{ color: C.textMuted, marginBottom: 32 }}>
-            Access your BizCore dashboard
+          <p style={{ color: "0f0f0f", marginBottom: 32 }}>
+           Experience the power of one dashboard to run the entire business.
           </p>
 
           {error && (
@@ -105,8 +126,8 @@ export default function LoginPage({ onLogin, onNavigate, isDark, toggleTheme }) 
             </div>
           )}
 
-          <Input label="Email" value={form.email} onChange={v => setForm({ ...form, email: v })} type="email" placeholder="bizcore@gmail.com" />
-          <Input label="Password" value={form.password} onChange={v => setForm({ ...form, password: v })} type="password" placeholder="••••••••" />
+          <Input label="Email" color="0f0f0f" value={form.email} onChange={v => setForm({ ...form, email: v })} type="email" placeholder="bizcore@gmail.com" />
+          <Input label="Password" color="0f0f0f" value={form.password} onChange={v => setForm({ ...form, password: v })} type="password" placeholder="••••••••" />
 
           <button
             onClick={handleLogin}

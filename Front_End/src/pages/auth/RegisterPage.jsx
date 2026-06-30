@@ -24,7 +24,7 @@ export default function RegisterPage({  onNavigate }) {
   const v2 = () => { 
     const e = {}; 
     if (!form.email || !/\S+@\S+\.\S+/.test(form.email)) e.email = "Valid email required"; 
-    if (form.password.length < 6) e.password = "Min 6 chars"; 
+    if (form.password.length < 8) e.password = "Min 8 characters"; 
     if (form.password !== form.confirm) e.confirm = "Mismatch"; 
     if (!form.agree) e.agree = "Required"; 
     return e; 
@@ -78,9 +78,28 @@ export default function RegisterPage({  onNavigate }) {
   };
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", background: C.bg, fontFamily: "'DM Sans', sans-serif" }}>
+     <div
+  style={{
+    minHeight: "100vh",
+    display: "flex",
+    fontFamily: "'DM Sans', sans-serif",
+
+    backgroundImage: `
+      linear-gradient(
+        rgba(8,12,20,0.75),
+        rgba(8,12,20,0.75)
+      ),
+      url("/images/business.jpg")
+    `,
+
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+    backgroundAttachment: "fixed",
+  }}
+>
       <GlobalStyle />
-      <div 
+      {/* <div 
         style={{
           width: "45%", 
           background: "#111", 
@@ -149,7 +168,7 @@ export default function RegisterPage({  onNavigate }) {
             ))}
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: 40 }}>
         <div style={{ width: "100%", maxWidth: 420 }}>
@@ -210,7 +229,7 @@ export default function RegisterPage({  onNavigate }) {
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               <Input label="Work Email" value={form.email} onChange={v => setForm({ ...form, email: v })} type="email" placeholder="abc@gmail.com" error={errors.email}/>
-              <Input label="Password" value={form.password} onChange={v => setForm({ ...form, password: v })} type="password" placeholder="Min 6 characters" error={errors.password}/>
+              <Input label="Password" value={form.password} onChange={v => setForm({ ...form, password: v })} type="password" placeholder="Min 8 characters" error={errors.password}/>
               <Input label="Confirm Password" value={form.confirm} onChange={v => setForm({ ...form, confirm: v })} type="password" placeholder="Repeat password" error={errors.confirm}/>
               <label style={{ display: "flex", gap: 9, alignItems: "center", cursor: "pointer" }}>
                 <input 

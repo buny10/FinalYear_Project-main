@@ -1,15 +1,21 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { setTheme } from '../theme/colors';
 
 export function useTheme() {
-  const [mode, setMode] = useState(() => localStorage.getItem("themeMode") || "dark");
+  const [mode, setMode] = useState(() => {
+    const saved = localStorage.getItem("themeMode") || "dark";
+    setTheme(saved); // mutate C immediately, before the first render ever happens
+    return saved;
+  });
 
-  useEffect(() => {
-    setTheme(mode);
-    localStorage.setItem("themeMode", mode);
-  }, [mode]);
-
-  const toggleTheme = () => setMode(prev => (prev === "dark" ? "light" : "dark"));
+  const toggleTheme = () => {
+    setMode(prev => {
+      const next = prev === "dark" ? "light" : "dark";
+      setTheme(next);                      // mutate C synchronously, same tick
+      localStorage.setItem("themeMode", next);
+      return next;
+    });
+  };
 
   return { mode, isDark: mode === "dark", toggleTheme };
 }
